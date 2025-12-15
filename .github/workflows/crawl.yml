@@ -1,11 +1,10 @@
 name: GitHub Stars Crawler
 
-# Triggers for workflow
 on:
-  workflow_dispatch:   # allows manual trigger
+  workflow_dispatch:
   push:
     branches:
-      - main          # runs on pushes to main branch
+      - main
 
 jobs:
   crawl:
@@ -28,10 +27,10 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Set up Python
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v5
         with:
           python-version: 3.11
 
@@ -40,15 +39,35 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
-      - name: Setup Postgres
+      - name: Setup Postgres schema
+        env:
+          PGPASSWORD: postgres
         run: |
-          psql -h localhost -U postgres -d github -c "CREATE TABLE IF NOT EXISTS github_repos (id TEXT PRIMARY KEY, name TEXT, owner TEXT, stars INT, url TEXT);"
+          psql -h localhost -U postgres -d github -c "
+          CREATE TABLE IF NOT EXISTS github_repos (
+            id TEXT PRIMARY KEY,
+            name TEXT NOT NULL,
+            owner TEXT NOT NULL,
+            stars INT NOT NULL,
+            url TEXT NOT NULL,
+            updated_at TIMESTAMP DEFAULT NOW()
+          );
+          "
 
       - name: Crawl GitHub Stars
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          DB_HOST: localhost
+          DB_NAME: github
+          DB_USER: postgres
+          DB_PASS: postgres
+          DB_PORT: 5432
         run: |
           python scripts/crawl_stars.py
 
       - name: Dump Postgres DB
+        env:
+          PGPASSWORD: postgres
         run: |
           pg_dump -h localhost -U postgres -d github -f github-db-dump.sql
 
