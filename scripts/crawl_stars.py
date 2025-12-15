@@ -50,7 +50,7 @@ def upsert_repos(repo_list):
     cur = conn.cursor()
 
     query = """
-    INSERT INTO github_repos (id, name, owner, stars, url, updated_at)
+    INSERT INTO github_repos (id, name, owner, stars, url)
     VALUES %s
     ON CONFLICT (id)
     DO UPDATE SET
