@@ -53,7 +53,7 @@ jobs:
           pg_dump -h localhost -U postgres -d github -f github-db-dump.sql
 
       - name: Upload artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: github-db-dump
           path: github-db-dump.sql
