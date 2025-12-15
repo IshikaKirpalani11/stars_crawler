@@ -62,6 +62,7 @@ jobs:
           DB_USER: postgres
           DB_PASS: postgres
           DB_PORT: 5432
+          PYTHONPATH: ${{ github.workspace }}
         run: |
           python scripts/crawl_stars.py
 
