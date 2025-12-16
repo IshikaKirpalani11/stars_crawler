@@ -51,6 +51,9 @@ CREATE TABLE github_repos (
     created_at TIMESTAMP DEFAULT NOW(),
     updated_at TIMESTAMP DEFAULT NOW()
 );
+```
+
+
 
 ⚙ GitHub Actions Pipeline
 
