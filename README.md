@@ -52,7 +52,7 @@ CREATE TABLE github_repos (
     updated_at TIMESTAMP DEFAULT NOW()
 );
 
-# GitHub Actions Pipeline
+⚙ GitHub Actions Pipeline
 
 The crawler runs inside a GitHub Actions workflow that:
 
@@ -60,7 +60,7 @@ Starts a PostgreSQL service container
 
 Installs Python dependencies
 
-Creates database schema
+Creates the database schema
 
 Crawls GitHub repositories via GraphQL
 
@@ -80,13 +80,13 @@ This ensures continuous data freshness without manual intervention.
 
 🔄 Daily Crawling Strategy
 
-The crawler runs daily using a scheduled GitHub Actions workflow.
+The crawler runs daily using a scheduled GitHub Actions workflow
 
-Repository records are upserted, not reinserted.
+Repository records are upserted, not reinserted
 
-Only mutable fields (e.g. stars, updated_at) are updated.
+Only mutable fields (stars, updated_at) are updated
 
-Immutable identifiers (id, name, owner) remain unchanged.
+Immutable identifiers (id, name, owner) remain unchanged
 
 This minimizes database writes and allows efficient continuous updates.
 
@@ -96,13 +96,13 @@ To scale this system to hundreds of millions of repositories, the following chan
 
 Crawling
 
-Distributed workers (e.g., Kafka, Pub/Sub)
+Distributed workers (Kafka / PubSub)
 
-Cursor-based partitioning of repository space
+Cursor-based partitioning
 
-Adaptive scheduling based on API rate limits
+Adaptive rate-limit scheduling
 
-Incremental crawling using updated_at checkpoints
+Incremental crawling using checkpoints
 
 Storage
 
@@ -110,25 +110,25 @@ Table partitioning or sharding
 
 Hot/cold data separation
 
-Possible migration to a distributed SQL database
+Migration to distributed SQL databases if required
 
 API Efficiency
 
 GraphQL query batching
 
-Backoff and retry strategies
+Exponential backoff & retries
 
 Priority-based crawling for active repositories
 
 🧬 Schema Evolution for Future Metadata
 
-To support additional GitHub metadata (issues, PRs, comments, reviews, CI checks):
+To support additional GitHub metadata such as issues, pull requests, comments, reviews, and CI checks:
 
 Introduce separate tables per entity
 
 Use append-only models for comments and events
 
-Store aggregated counts on parent entities
+Store aggregated counts at the parent level
 
 Example:
 
